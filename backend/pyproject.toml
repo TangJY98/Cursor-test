@@ -1,0 +1,35 @@
+[project]
+name = "agent-chat-backend"
+version = "0.1.0"
+description = "Agent Chat backend — Agno AgentOS with AG-UI and Vercel AI Gateway"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "agno[agui,os]>=2.8.7",
+    "httpx>=0.28.1",
+    "openai>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.2",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

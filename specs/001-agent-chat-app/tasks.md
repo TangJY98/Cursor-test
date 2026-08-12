@@ -30,11 +30,11 @@ description: "Task list for Agent Chat App v1 implementation"
 
 **Purpose**: Initialize monorepo structure and dependencies
 
-- [ ] T001 Create monorepo directory structure per plan.md (`backend/src/agent_chat/`, `backend/tests/unit/`, `backend/tests/integration/`, `frontend/src/providers/`, `frontend/src/components/assistant-ui/`, `frontend/src/lib/`, `frontend/tests/`)
-- [ ] T002 Initialize `backend/pyproject.toml` with uv, `agno[os,agui]`, `openai` (OpenAI-compatible client for `OpenAILike` only), `pytest`, `httpx` dependencies and `[project.scripts]` entry for AgentOS serve
-- [ ] T002a [P] Create `backend/.env.example` with `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL=https://ai-gateway.vercel.sh/v1`, `AGENT_MODEL_ID=google/gemini-2.5-flash-lite`
+- [x] T001 Create monorepo directory structure per plan.md (`backend/src/agent_chat/`, `backend/tests/unit/`, `backend/tests/integration/` — frontend dirs deferred)
+- [x] T002 Initialize `backend/pyproject.toml` with uv, `agno[os,agui]`, `openai` (OpenAI-compatible client for `OpenAILike` only), `pytest`, `httpx` dependencies and `[project.scripts]` entry for AgentOS serve
+- [x] T002a [P] Create `backend/.env.example` with `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL=https://ai-gateway.vercel.sh/v1`, `AGENT_MODEL_ID=google/gemini-2.5-flash-lite`
 - [ ] T003 [P] Initialize `frontend/package.json` with React 19, Vite 6, TypeScript, `@assistant-ui/react`, `@assistant-ui/react-ag-ui`, `@ag-ui/client`, `@assistant-ui/vite` dependencies
-- [ ] T004 [P] Create root `Makefile` with placeholder targets (`dev`, `dev-backend`, `dev-frontend`, `health`, `test`, `lint`)
+- [x] T004 [P] Create root `Makefile` with placeholder targets (`dev`, `dev-backend`, `dev-frontend`, `health`, `test`, `lint`)
 - [ ] T005 [P] Create `frontend/.env.example` with `VITE_AGUI_AGENT_URL=http://localhost:7777/agui`
 - [ ] T006 [P] Configure `frontend/vite.config.ts` with `aui()` plugin from `@assistant-ui/vite`
 
@@ -46,14 +46,14 @@ description: "Task list for Agent Chat App v1 implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Create `backend/src/agent_chat/__init__.py` package marker
-- [ ] T008 Create `backend/src/agent_chat/agent.py` with Agno `Agent`, `OpenAILike` model via Vercel AI Gateway (`base_url` from `AI_GATEWAY_BASE_URL`, `id` from `AGENT_MODEL_ID` defaulting to `google/gemini-2.5-flash-lite`, `api_key` from `AI_GATEWAY_API_KEY`), and 繁體中文 system instruction
-- [ ] T009 Create `backend/src/agent_chat/app.py` wiring `AgentOS(agents=[...], interfaces=[AGUI(...)])` with `cors_allowed_origins` for `http://localhost:5173` and `http://localhost:3000`
-- [ ] T010 [P] Create `backend/src/agent_chat/validation.py` with pure `validate_message(content: str) -> str | None` (empty/whitespace and 8000-char limit checks)
+- [x] T007 Create `backend/src/agent_chat/__init__.py` package marker
+- [x] T008 Create `backend/src/agent_chat/agent.py` with Agno `Agent`, `OpenAILike` model via Vercel AI Gateway (`base_url` from `AI_GATEWAY_BASE_URL`, `id` from `AGENT_MODEL_ID` defaulting to `google/gemini-2.5-flash-lite`, `api_key` from `AI_GATEWAY_API_KEY`), and 繁體中文 system instruction
+- [x] T009 Create `backend/src/agent_chat/app.py` wiring `AgentOS(agents=[...], interfaces=[AGUI(...)])` with `cors_allowed_origins` for `http://localhost:5173` and `http://localhost:3000`
+- [x] T010 [P] Create `backend/src/agent_chat/validation.py` with pure `validate_message(content: str) -> str | None` (empty/whitespace and 8000-char limit checks)
 - [ ] T011 [P] Create `frontend/src/lib/errors.ts` with 繁體中文 error constants (`CONNECTION_FAILED`, `MESSAGE_TOO_LONG`, `EMPTY_MESSAGE`, `STREAM_INTERRUPTED`)
 - [ ] T012 [P] Create `frontend/src/providers/AgUiRuntimeProvider.tsx` skeleton with `HttpAgent` and `useAgUiRuntime` imports (no env wiring yet)
 - [ ] T013 [P] Create `frontend/src/main.tsx` and `frontend/index.html` Vite entry points
-- [ ] T014 Wire `make dev-backend` in `Makefile` to run `uv run` AgentOS from `backend/src/agent_chat/app.py` on port 7777
+- [x] T014 Wire `make dev-backend` in `Makefile` to run `uv run` AgentOS from `backend/src/agent_chat/app.py` on port 7777
 
 **Checkpoint**: Backend starts; `GET http://localhost:7777/status` returns healthy response
 
@@ -74,7 +74,7 @@ description: "Task list for Agent Chat App v1 implementation"
 - [ ] T019 [US1] Implement 8000-character limit check in `frontend/src/components/assistant-ui/thread.tsx` composer before send
 - [ ] T020 [US1] Configure disable-send-while-streaming in `frontend/src/providers/AgUiRuntimeProvider.tsx` (consistent with data-model `ChatThread.status=streaming`)
 - [ ] T021 [US1] Implement stream-interruption handling via `onError` in `frontend/src/providers/AgUiRuntimeProvider.tsx` showing `errors.STREAM_INTERRUPTED` with partial content preserved
-- [ ] T022 [US1] Add POST `/agui` streaming smoke test in `backend/tests/integration/test_agui.py` asserting SSE events received for a user message
+- [x] T022 [US1] Add POST `/agui` streaming smoke test in `backend/tests/integration/test_agui.py` asserting SSE events received for a user message
 - [ ] T023 [US1] Wire `make dev-frontend` in `Makefile` to run `pnpm dev` in `frontend/` on port 5173
 
 **Checkpoint**: `make dev` → full streaming chat works end-to-end (MVP complete)
@@ -89,9 +89,9 @@ description: "Task list for Agent Chat App v1 implementation"
 
 ### Implementation for User Story 2
 
-- [ ] T024 [US2] Implement `make health` target in `Makefile` calling `curl -sf http://localhost:7777/status` with clear pass/fail output
-- [ ] T025 [US2] Add GET `/status` contract test in `backend/tests/integration/test_agui.py` asserting JSON healthy indicator per `contracts/api.md`
-- [ ] T026 [US2] Add unhealthy-agent test case in `backend/tests/integration/test_agui.py` verifying non-200 or explicit unavailable status when `AI_GATEWAY_API_KEY` is missing
+- [x] T024 [US2] Implement `make health` target in `Makefile` calling `curl -sf http://localhost:7777/status` with clear pass/fail output
+- [x] T025 [US2] Add GET `/status` contract test in `backend/tests/integration/test_agui.py` asserting JSON healthy indicator per `contracts/api.md`
+- [x] T026 [US2] Add unhealthy-agent test case in `backend/tests/integration/test_agui.py` verifying non-200 or explicit unavailable status when `AI_GATEWAY_API_KEY` is missing
 
 **Checkpoint**: `make health` passes when backend running; fails when stopped
 
@@ -117,10 +117,10 @@ description: "Task list for Agent Chat App v1 implementation"
 
 **Purpose**: Tests, documentation, and full validation across all stories
 
-- [ ] T030 [P] Add unit tests for `validate_message` in `backend/tests/unit/test_validation.py` (empty, whitespace, 8000-char boundary, valid message)
+- [x] T030 [P] Add unit tests for `validate_message` in `backend/tests/unit/test_validation.py` (empty, whitespace, 8000-char boundary, valid message)
 - [ ] T031 [P] Add Vitest test for empty-message guard in `frontend/tests/composer.test.tsx`
-- [ ] T032 Wire `make test` in `Makefile` to run `uv run pytest` in `backend/` and `pnpm test` in `frontend/`
-- [ ] T033 Wire `make lint` in `Makefile` to run `ruff check` in `backend/` and `pnpm lint` in `frontend/`
+- [x] T032 Wire `make test` in `Makefile` to run `uv run pytest` in `backend/` and `pnpm test` in `frontend/`
+- [x] T033 Wire `make lint` in `Makefile` to run `ruff check` in `backend/` and `pnpm lint` in `frontend/`
 - [ ] T034 Create root `README.md` with prerequisites, env setup, canonical `make` commands, and link to `specs/001-agent-chat-app/quickstart.md`
 - [ ] T035 Run all quickstart.md validation scenarios VS-1 through VS-4 and fix any gaps
 
