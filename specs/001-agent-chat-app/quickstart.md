@@ -10,14 +10,16 @@ End-to-end validation guide. See [data-model.md](./data-model.md) and [contracts
 - **Python** 3.11+
 - **uv** (package manager)
 - **Node.js** 20+ and **pnpm**
-- **OpenAI API key** (or configured Agno model provider)
+- **Vercel AI Gateway API key** (`AI_GATEWAY_API_KEY`)
 - Repository cloned with plan artifacts present
 
 ## Environment Setup
 
 ```bash
-# Backend
-export OPENAI_API_KEY=sk-...   # required for LLM
+# Backend (copy backend/.env.example and fill in your key)
+export AI_GATEWAY_API_KEY=gw_...
+export AI_GATEWAY_BASE_URL=https://ai-gateway.vercel.sh/v1
+export AGENT_MODEL_ID=google/gemini-2.5-flash-lite
 
 # Frontend (.env in frontend/)
 echo 'VITE_AGUI_AGENT_URL=http://localhost:7777/agui' > frontend/.env
@@ -122,7 +124,7 @@ Maps to spec acceptance criteria:
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
 | CORS error in browser console | Backend CORS not configured | Add frontend origin to `AgentOS` `cors_allowed_origins` |
-| 503 on `/status` | Missing `OPENAI_API_KEY` | Export key and restart backend |
+| 503 on `/status` | Missing `AI_GATEWAY_API_KEY` | Export key and restart backend |
 | Connection refused | Backend not running | `make dev-backend` |
 | Stream never starts | Wrong `VITE_AGUI_AGENT_URL` | Must end with `/agui`, not `/agent` |
 

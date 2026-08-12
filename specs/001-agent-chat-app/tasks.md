@@ -31,7 +31,8 @@ description: "Task list for Agent Chat App v1 implementation"
 **Purpose**: Initialize monorepo structure and dependencies
 
 - [ ] T001 Create monorepo directory structure per plan.md (`backend/src/agent_chat/`, `backend/tests/unit/`, `backend/tests/integration/`, `frontend/src/providers/`, `frontend/src/components/assistant-ui/`, `frontend/src/lib/`, `frontend/tests/`)
-- [ ] T002 Initialize `backend/pyproject.toml` with uv, `agno[os,agui]`, `openai`, `pytest`, `httpx` dependencies and `[project.scripts]` entry for AgentOS serve
+- [ ] T002 Initialize `backend/pyproject.toml` with uv, `agno[os,agui]`, `openai` (OpenAI-compatible client for `OpenAILike` only), `pytest`, `httpx` dependencies and `[project.scripts]` entry for AgentOS serve
+- [ ] T002a [P] Create `backend/.env.example` with `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL=https://ai-gateway.vercel.sh/v1`, `AGENT_MODEL_ID=google/gemini-2.5-flash-lite`
 - [ ] T003 [P] Initialize `frontend/package.json` with React 19, Vite 6, TypeScript, `@assistant-ui/react`, `@assistant-ui/react-ag-ui`, `@ag-ui/client`, `@assistant-ui/vite` dependencies
 - [ ] T004 [P] Create root `Makefile` with placeholder targets (`dev`, `dev-backend`, `dev-frontend`, `health`, `test`, `lint`)
 - [ ] T005 [P] Create `frontend/.env.example` with `VITE_AGUI_AGENT_URL=http://localhost:7777/agui`
@@ -46,7 +47,7 @@ description: "Task list for Agent Chat App v1 implementation"
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
 - [ ] T007 Create `backend/src/agent_chat/__init__.py` package marker
-- [ ] T008 Create `backend/src/agent_chat/agent.py` with Agno `Agent`, OpenAI model, and 繁體中文 system instruction
+- [ ] T008 Create `backend/src/agent_chat/agent.py` with Agno `Agent`, `OpenAILike` model via Vercel AI Gateway (`base_url` from `AI_GATEWAY_BASE_URL`, `id` from `AGENT_MODEL_ID` defaulting to `google/gemini-2.5-flash-lite`, `api_key` from `AI_GATEWAY_API_KEY`), and 繁體中文 system instruction
 - [ ] T009 Create `backend/src/agent_chat/app.py` wiring `AgentOS(agents=[...], interfaces=[AGUI(...)])` with `cors_allowed_origins` for `http://localhost:5173` and `http://localhost:3000`
 - [ ] T010 [P] Create `backend/src/agent_chat/validation.py` with pure `validate_message(content: str) -> str | None` (empty/whitespace and 8000-char limit checks)
 - [ ] T011 [P] Create `frontend/src/lib/errors.ts` with 繁體中文 error constants (`CONNECTION_FAILED`, `MESSAGE_TOO_LONG`, `EMPTY_MESSAGE`, `STREAM_INTERRUPTED`)
@@ -90,7 +91,7 @@ description: "Task list for Agent Chat App v1 implementation"
 
 - [ ] T024 [US2] Implement `make health` target in `Makefile` calling `curl -sf http://localhost:7777/status` with clear pass/fail output
 - [ ] T025 [US2] Add GET `/status` contract test in `backend/tests/integration/test_agui.py` asserting JSON healthy indicator per `contracts/api.md`
-- [ ] T026 [US2] Add unhealthy-agent test case in `backend/tests/integration/test_agui.py` verifying non-200 or explicit unavailable status when `OPENAI_API_KEY` is missing
+- [ ] T026 [US2] Add unhealthy-agent test case in `backend/tests/integration/test_agui.py` verifying non-200 or explicit unavailable status when `AI_GATEWAY_API_KEY` is missing
 
 **Checkpoint**: `make health` passes when backend running; fails when stopped
 
@@ -154,7 +155,7 @@ Phase 1 (Setup)
 
 **Phase 1** (after T001):
 ```text
-T003 + T004 + T005 + T006  (all [P])
+T002a + T003 + T004 + T005 + T006  (all [P])
 ```
 
 **Phase 2** (after T009):
@@ -225,6 +226,7 @@ For full spec compliance, complete through Phase 5 before polish.
 ## Notes
 
 - Agno endpoint is `POST /agui` (not `/agent` from generic assistant-ui examples)
+- LLM routes through Vercel AI Gateway (`https://ai-gateway.vercel.sh/v1`) with model `google/gemini-2.5-flash-lite` — not OpenAI direct
 - No database, auth, tools, or RAG in any task (spec FR-009–FR-012)
 - All `make` commands are the canonical interface (constitution Principle X)
 - Commit after each phase checkpoint

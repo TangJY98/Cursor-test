@@ -13,7 +13,7 @@ Build a minimal Traditional Chinese agent chat application with streaming replie
 
 **Language/Version**: Python 3.11+ (backend), TypeScript 5.x (frontend)  
 **Primary Dependencies**:
-- Backend: `agno[os,agui]`, `openai` (or configured model provider)
+- Backend: `agno[os,agui]`, `OpenAILike` via Vercel AI Gateway (`google/gemini-2.5-flash-lite`)
 - Frontend: `@assistant-ui/react`, `@assistant-ui/react-ag-ui`, `@ag-ui/client`, `@assistant-ui/vite`, React 19, Vite 6
 
 **Storage**: N/A — no persistence (in-browser memory only)  
@@ -32,7 +32,7 @@ Build a minimal Traditional Chinese agent chat application with streaming replie
 | --- | --- | --- | --- |
 | I. Do Not Distribute by Default | ✅ PASS | ✅ PASS | Two processes (browser + Python server) are required for a web app, not microservice distribution. No queues, workers, or separate services. |
 | II. Optimize for Deletion | ✅ PASS | ✅ PASS | Thin wrappers: `app.py` (AgentOS boot), `AgUiRuntimeProvider.tsx` (HttpAgent wiring). No plugin frameworks. |
-| III. Make Dependencies Explicit | ✅ PASS | ✅ PASS | `HttpAgent` URL injected via env; agent model/API key via constructor/env, not globals. |
+| III. Make Dependencies Explicit | ✅ PASS | ✅ PASS | `HttpAgent` URL injected via env; Gateway credentials via `AI_GATEWAY_API_KEY` / `AGENT_MODEL_ID` env vars, not globals. |
 | IV. Contract at Boundary | ✅ PASS | ✅ PASS | AG-UI protocol at `POST /agui`; versioned contract in [contracts/api.md](./contracts/api.md). |
 | V. Test the Transformation | ✅ PASS | ✅ PASS | Unit tests for validation helpers; integration tests for `/status` and `/agui` stream. |
 | VI. Structured Events | ✅ PASS | ✅ PASS | AG-UI events are structured; frontend logs via `useAgUiRuntime` logger with `request_id`/`threadId` correlation. |
@@ -69,7 +69,7 @@ backend/
 │   └── agent_chat/
 │       ├── __init__.py
 │       ├── app.py               # AgentOS + AGUI interface setup
-│       ├── agent.py             # Agent definition + TC system prompt
+│       ├── agent.py             # Agent + OpenAILike (Vercel AI Gateway / Gemini)
 │       └── validation.py        # Message length / empty checks (pure)
 └── tests/
     ├── unit/
@@ -111,7 +111,8 @@ frontend/
 ┌─────────────────────────────────────────────────────────┐
 │  Agno AgentOS (Python, port 7777)                        │
 │  ┌──────────┐    ┌─────────┐    ┌──────────────────┐   │
-│  │ AGUI     │───►│ Agent   │───►│ LLM (OpenAI etc) │   │
+│  │ AGUI     │───►│ Agent   │───►│ Vercel AI Gateway │   │
+│  │          │    │ OpenAILike│  │ gemini-2.5-flash-lite│
 │  │ interface│    │ (TC sys │    └──────────────────┘   │
 │  └────┬─────┘    │ prompt) │                           │
 │       │          └─────────┘                           │
@@ -123,7 +124,7 @@ frontend/
 
 ### Phase A — Backend bootstrap
 1. `uv init` backend with `agno[os,agui]`
-2. Define `Agent` with 繁體中文 system instruction
+2. Define `Agent` with `OpenAILike` → Vercel AI Gateway (`google/gemini-2.5-flash-lite`) and 繁體中文 system instruction
 3. Wire `AgentOS(agents=[...], interfaces=[AGUI(...)])` with CORS
 4. Verify `GET /status` and `POST /agui` manually
 

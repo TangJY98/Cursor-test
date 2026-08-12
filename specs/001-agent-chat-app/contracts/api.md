@@ -49,7 +49,7 @@ No request body. No authentication in v1.
 ```json
 {
   "status": "unavailable",
-  "detail": "Agent model not configured"
+  "detail": "AI Gateway API key not configured"
 }
 ```
 
@@ -147,12 +147,12 @@ data: {"type":"RUN_FINISHED"}
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `OPENAI_API_KEY` | yes* | — | LLM provider key for Agno agent model |
+| `AI_GATEWAY_API_KEY` | yes | — | Vercel AI Gateway API key (`gw_...`) |
+| `AI_GATEWAY_BASE_URL` | no | `https://ai-gateway.vercel.sh/v1` | OpenAI-compatible Gateway base URL |
+| `AGENT_MODEL_ID` | no | `google/gemini-2.5-flash-lite` | Model ID routed through AI Gateway |
 | `AGENT_OS_HOST` | no | `localhost` | Bind host |
 | `AGENT_OS_PORT` | no | `7777` | Bind port |
 | `CORS_ORIGINS` | no | `http://localhost:5173,http://localhost:3000` | Comma-separated allowed origins |
-
-\*Required unless using a local/mock model for development.
 
 ---
 

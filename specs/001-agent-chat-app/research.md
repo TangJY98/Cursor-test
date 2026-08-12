@@ -133,3 +133,40 @@
 | `make lint` | Run linters |
 
 **Rationale**: Single discoverable command list per constitution Principle X.
+
+## R11 — LLM provider: Vercel AI Gateway + Gemini 2.5 Flash Lite
+
+**Decision**: Route all agent LLM calls through **Vercel AI Gateway** using Agno `OpenAILike` with:
+- `base_url`: `https://ai-gateway.vercel.sh/v1` (override via `AI_GATEWAY_BASE_URL`)
+- `id`: `google/gemini-2.5-flash-lite` (override via `AGENT_MODEL_ID`)
+- `api_key`: `AI_GATEWAY_API_KEY`
+
+**Rationale**:
+- User requirement: no direct OpenAI usage; use Vercel AI Gateway with Gemini Flash Lite.
+- AI Gateway exposes an OpenAI-compatible Chat Completions API; Agno `OpenAILike` is the native adapter (no custom proxy layer).
+- Model ID `google/gemini-2.5-flash-lite` is the canonical Gateway identifier for Gemini 2.5 Flash Lite.
+
+**Alternatives considered**:
+
+| Alternative | Rejected because |
+| --- | --- |
+| `agno.models.google.Gemini` + `GOOGLE_API_KEY` | Bypasses Vercel AI Gateway; user explicitly requested Gateway. |
+| `OpenAIResponses` / direct OpenAI | User does not use OpenAI. |
+| `google/gemini-3.5-flash-lite` | User chose `google/gemini-2.5-flash-lite`. |
+
+**Implementation reference** (`backend/src/agent_chat/agent.py`):
+
+```python
+from os import getenv
+from agno.agent import Agent
+from agno.models.openai.like import OpenAILike
+
+chat_agent = Agent(
+    model=OpenAILike(
+        id=getenv("AGENT_MODEL_ID", "google/gemini-2.5-flash-lite"),
+        api_key=getenv("AI_GATEWAY_API_KEY"),
+        base_url=getenv("AI_GATEWAY_BASE_URL", "https://ai-gateway.vercel.sh/v1"),
+    ),
+    instructions="請一律以繁體中文回覆。",
+)
+```
