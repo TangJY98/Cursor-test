@@ -115,6 +115,7 @@ async def test_agui_streams_response(reload_app, monkeypatch):
         "tools": [],
         "context": [],
         "state": {},
+        "forwardedProps": {},
     }
 
     transport = ASGITransport(app=app_module.app)
